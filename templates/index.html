@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EmotionSense AI</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><span class="emoji">🎧</span> <span class="brand">EmotionSense AI</span></h1>
+      <p class="typing-text" id="typing-text">
+        We currently support <strong>.wav</strong> audio uploads only — record your voice separately and upload the file to detect emotion.
+      </p>
+    </header>
+
+    <div class="emoji-loop" id="emoji-loop">😄</div>
+
+    <main>
+      <form id="upload-form">
+        <label for="audio" class="file-label">Choose .wav file</label>
+        <input type="file" id="audio" name="audio" accept=".wav" required />
+        <button type="submit">Predict Emotion</button>
+      </form>
+
+      <div id="loading" class="loading-spinner hidden"></div>
+
+      <div id="result-container" class="result hidden">
+        <p><strong>Transcription:</strong> <span id="transcription"></span></p>
+        <p><strong>Predicted Emotion:</strong> <span id="predicted-emotion"></span></p>
+      </div>
+    </main>
+
+    <footer>
+      &copy; Sreeharinaidu Rangani 2025
+    </footer>
+  </div>
+
+  <script>
+    // Typing animation
+    const typingElement = document.getElementById("typing-text");
+    const originalHTML = typingElement.innerHTML;
+    const textOnly = typingElement.textContent;
+    typingElement.innerHTML = "";
+
+    let index = 0;
+    function typeLetter() {
+      if (index < textOnly.length) {
+        typingElement.innerHTML += textOnly.charAt(index);
+        index++;
+        setTimeout(typeLetter, 25);
+      } else {
+        typingElement.innerHTML = originalHTML;
+      }
+    }
+    typeLetter();
+
+    // Emoji animation
+    const emojis = ["😄", "😢", "😡", "😲", "😊"];
+    let currentEmoji = 0;
+    const emojiLoop = document.getElementById("emoji-loop");
+    let emojiInterval = setInterval(() => {
+      currentEmoji = (currentEmoji + 1) % emojis.length;
+      emojiLoop.textContent = emojis[currentEmoji];
+    }, 500);
+
+    // Form submit
+    const form = document.getElementById("upload-form");
+    const resultContainer = document.getElementById("result-container");
+    const transcriptionEl = document.getElementById("transcription");
+    const predictedEmotionEl = document.getElementById("predicted-emotion");
+    const spinner = document.getElementById("loading");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const fileInput = document.getElementById("audio");
+      const formData = new FormData();
+      formData.append("audio", fileInput.files[0]);
+
+      resultContainer.classList.add("hidden");
+      spinner.classList.remove("hidden");
+
+      const res = await fetch("/predict", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+
+      spinner.classList.add("hidden");
+      transcriptionEl.textContent = data.transcript;
+      predictedEmotionEl.textContent = data.emotion;
+      resultContainer.classList.remove("hidden");
+
+      clearInterval(emojiInterval);
+      emojiLoop.textContent = data.emoji || "😐";
+
+      const emotionColors = {
+        happy: "#0d3b2e",
+        sad: "#1a1e2e",
+        angry: "#2e0d0d",
+        surprised: "#1e2e1a",
+        neutral: "#121212",
+        disgust: "#2b2e1a",
+        fear: "#2e1a1a"
+      };
+      document.body.style.backgroundColor = emotionColors[(data.emotion || "").toLowerCase()] || "#121212";
+    });
+  </script>
+</body>
+</html>

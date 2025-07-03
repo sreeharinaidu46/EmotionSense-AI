@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+venv*/
+.DS_Store
+temp/
+*.wav
+*.pkl
+*.h5
+model/
+data/
+training_accuracy.png
