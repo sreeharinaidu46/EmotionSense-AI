@@ -4,10 +4,13 @@ venv*/
 .DS_Store
 temp/
 *.wav
-*.pkl
-*.h5
-model/*
+
+# Allow specific model and data files
 !model/multimodal_model/
 !model/multimodal_model/**/*
-#data/
+
+# audio_scaler.pkl exception
+!data/
+!data/audio_scaler.pkl
+
 training_accuracy.png
