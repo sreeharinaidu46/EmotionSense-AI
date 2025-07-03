@@ -75,6 +75,14 @@ form {
   box-shadow: 0 0 10px rgba(0, 255, 200, 0.3);
   box-sizing: border-box; /* ensures padding doesn't reduce width */
 }
+.filename-text {
+  font-size: 0.9rem;
+  color: #ccc;
+  margin-bottom: 10px;
+  text-align: center;
+  word-break: break-all;
+}
+
 
 
 

@@ -24,6 +24,7 @@
       <form id="upload-form">
         <label for="audio" class="file-label">Choose .wav file</label>
         <input type="file" id="audio" name="audio" accept=".wav" required />
+        <p id="selected-filename" class="filename-text"></p>
         <button type="submit">Predict Emotion</button>
       </form>
 
@@ -68,6 +69,18 @@
       emojiLoop.textContent = emojis[currentEmoji];
     }, 500);
 
+    // Show selected filename
+    const fileInput = document.getElementById("audio");
+    const fileNameText = document.getElementById("selected-filename");
+
+    fileInput.addEventListener("change", () => {
+      if (fileInput.files.length > 0) {
+        fileNameText.textContent = fileInput.files[0].name;
+      } else {
+        fileNameText.textContent = "";
+      }
+    });
+
     // Form submit
     const form = document.getElementById("upload-form");
     const resultContainer = document.getElementById("result-container");
@@ -78,7 +91,6 @@
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const fileInput = document.getElementById("audio");
       const formData = new FormData();
       formData.append("audio", fileInput.files[0]);
 

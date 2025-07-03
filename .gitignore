@@ -6,6 +6,8 @@ temp/
 *.wav
 *.pkl
 *.h5
-model/
-data/
+model/*
+!model/multimodal_model/
+!model/multimodal_model/**/*
+#data/
 training_accuracy.png
